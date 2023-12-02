@@ -45,7 +45,7 @@ func (ur *UsersRepository) Create(user model.User) model.User {
 }
 
 func (ur *UsersRepository) Update(user model.User) model.User {
-	ur.Db.Save(&user)
+	ur.Db.Model(&user).Updates(user)
 	return user
 }
 

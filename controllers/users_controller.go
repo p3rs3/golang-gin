@@ -27,7 +27,7 @@ func CreateUsersController(Repository repository.IUsersRepository) IUsersControl
 }
 
 // @Summary			Get user by id
-// @Param			user_id path string true "asd"
+// @Param			user_id path string true "user id"
 // @Produce			application/json
 // @Tags			users
 // @Router			/users/{user_id} [get]
@@ -37,7 +37,7 @@ func (controller *UsersController) FindOneById(ctx *gin.Context) {
 	user, err := controller.Repository.FindOneById(id)
 
 	if err != nil {
-		ctx.JSON(http.StatusNotFound, dto.ErrorDto{Status: 404, Error_code: "user_not_found"})
+		ctx.JSON(http.StatusNotFound, dto.ErrorDto{Status: http.StatusNotFound, Error_code: "user_not_found"})
 		return
 	}
 
@@ -56,7 +56,7 @@ func (controller *UsersController) Delete(ctx *gin.Context) {
 	_, err := controller.Repository.FindOneById(id)
 
 	if err != nil {
-		ctx.JSON(http.StatusNotFound, dto.ErrorDto{Status: 404, Error_code: "user_not_found"})
+		ctx.JSON(http.StatusNotFound, dto.ErrorDto{Status: http.StatusNotFound, Error_code: "user_not_found"})
 	}
 
 	controller.Repository.Delete(id)
@@ -87,7 +87,7 @@ func (controller *UsersController) Create(ctx *gin.Context) {
 	ctx.Header("Content-Type", "application/json")
 
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, dto.ErrorDto{Status: http.StatusBadRequest, Error_code: err.Error()})
 		return
 	}
 
@@ -105,15 +105,23 @@ func (controller *UsersController) Create(ctx *gin.Context) {
 // @Success			200 {object} model.User
 func (controller *UsersController) Update(ctx *gin.Context) {
 	id, _ := strconv.Atoi(ctx.Param("id"))
-	_, err := controller.Repository.FindOneById(id)
+	body := dto.UpdateUserDto{}
+	validateErr := ctx.ShouldBindJSON(&body)
 
-	if err != nil {
-		ctx.JSON(http.StatusNotFound, dto.ErrorDto{Status: 404, Error_code: "user_not_found"})
+	if validateErr != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, dto.ErrorDto{Status: http.StatusBadRequest, Error_code: validateErr.Error()})
+		return
 	}
 
-	body := dto.UpdateUserDto{}
-	ctx.ShouldBindJSON(&body)
-	user := controller.Repository.Update(model.User{Name: body.Name, Secondname: body.Secondname, Age: body.Age, Id: id})
+	_, err := controller.Repository.FindOneById(id)
 	ctx.Header("Content-Type", "application/json")
+
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, dto.ErrorDto{Status: http.StatusNotFound, Error_code: "user_not_found"})
+	}
+
+	controller.Repository.Update(model.User{Name: body.Name, Secondname: body.Secondname, Age: body.Age, Id: id})
+	user, _ := controller.Repository.FindOneById(id)
+
 	ctx.JSON(http.StatusOK, user)
 }
