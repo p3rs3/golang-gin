@@ -83,10 +83,16 @@ func (controller *UsersController) FindMany(ctx *gin.Context) {
 // @Success			201 {object} model.User
 func (controller *UsersController) Create(ctx *gin.Context) {
 	body := dto.CreateUserDto{}
-	ctx.ShouldBindJSON(&body)
+	err := ctx.ShouldBindJSON(&body)
+	ctx.Header("Content-Type", "application/json")
+
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+	}
+
 	user := model.User{Name: body.Name, Secondname: body.Secondname, Age: body.Age}
 	createdUser := controller.Repository.Create(user)
-	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusCreated, createdUser)
 }
 
