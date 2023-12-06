@@ -3,19 +3,35 @@ definitions:
   dto.CreateUserDto:
     properties:
       age:
+        maximum: 99
+        minimum: 1
         type: integer
       name:
+        maxLength: 30
+        minLength: 1
         type: string
       secondname:
+        maxLength: 30
+        minLength: 1
         type: string
+    required:
+    - age
+    - name
+    - secondname
     type: object
   dto.UpdateUserDto:
     properties:
       age:
+        maximum: 99
+        minimum: 1
         type: integer
       name:
+        maxLength: 30
+        minLength: 1
         type: string
       secondname:
+        maxLength: 30
+        minLength: 1
         type: string
     type: object
   model.User:
@@ -28,6 +44,11 @@ definitions:
         type: string
       secondname:
         type: string
+    required:
+    - age
+    - id
+    - name
+    - secondname
     type: object
 host: localhost:8080
 info:
@@ -86,7 +107,7 @@ paths:
       - users
     get:
       parameters:
-      - description: asd
+      - description: user id
         in: path
         name: user_id
         required: true

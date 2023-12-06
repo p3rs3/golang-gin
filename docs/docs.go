@@ -77,7 +77,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "asd",
+                        "description": "user id",
                         "name": "user_id",
                         "in": "path",
                         "required": true
@@ -155,15 +155,26 @@ const docTemplate = `{
     "definitions": {
         "dto.CreateUserDto": {
             "type": "object",
+            "required": [
+                "age",
+                "name",
+                "secondname"
+            ],
             "properties": {
                 "age": {
-                    "type": "integer"
+                    "type": "integer",
+                    "maximum": 99,
+                    "minimum": 1
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 30,
+                    "minLength": 1
                 },
                 "secondname": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 30,
+                    "minLength": 1
                 }
             }
         },
@@ -171,18 +182,30 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "age": {
-                    "type": "integer"
+                    "type": "integer",
+                    "maximum": 99,
+                    "minimum": 1
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 30,
+                    "minLength": 1
                 },
                 "secondname": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 30,
+                    "minLength": 1
                 }
             }
         },
         "model.User": {
             "type": "object",
+            "required": [
+                "age",
+                "id",
+                "name",
+                "secondname"
+            ],
             "properties": {
                 "age": {
                     "type": "integer"
