@@ -15,16 +15,14 @@ type UsersRoutes struct {
 }
 
 type IUsersRoutes interface {
-	GetRoutes() *gin.Engine
+	SetRoutes(router *gin.Engine)
 }
 
 func CreateUsersRoutes(Controller controller.IUsersController) IUsersRoutes {
 	return &UsersRoutes{Controller: Controller}
 }
 
-func (userRoutes *UsersRoutes) GetRoutes() *gin.Engine {
-	router := gin.Default()
-
+func (userRoutes *UsersRoutes) SetRoutes(router *gin.Engine) {
 	docs.SwaggerInfo.BasePath = "/api"
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
@@ -35,6 +33,4 @@ func (userRoutes *UsersRoutes) GetRoutes() *gin.Engine {
 	tagsRouter.GET("/:id", userRoutes.Controller.FindOneById)
 	tagsRouter.DELETE("/:id", userRoutes.Controller.Delete)
 	tagsRouter.PATCH("/:id", userRoutes.Controller.Update)
-
-	return router
 }

@@ -4,6 +4,7 @@ import (
 	"crud-gin/config"
 	controller "crud-gin/controllers"
 	repository "crud-gin/repositories"
+	"crud-gin/router"
 	"crud-gin/routes"
 	"fmt"
 	"net/http"
@@ -20,9 +21,8 @@ func init() {
 	}
 }
 
-// @title 		Users Service API
+// @title 		API
 // @version		1.0
-// @description A Users service API in Go using Gin framework
 
 // @host 	localhost:8080
 // @BasePath /docs
@@ -48,11 +48,14 @@ func main() {
 
 	repository := repository.CreateUsersRepository(db)
 	controller := controller.CreateUsersController(repository)
-	routes := routes.CreateUsersRoutes(controller)
+
+	router := router.CreateRouter()
+
+	routes.CreateUsersRoutes(controller).SetRoutes(router)
 
 	server := &http.Server{
 		Addr:    ":8080",
-		Handler: routes.GetRoutes(),
+		Handler: router,
 	}
 	server.ListenAndServe()
 }

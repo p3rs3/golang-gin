@@ -47,8 +47,8 @@ func getEnvAsBool(name string, defaultVal bool) bool {
 }
 
 func getEnvAsInt(name string, defaultVal int) int {
-	valueStr := getEnv(name, "")
-	if value, err := strconv.Atoi(valueStr); err == nil {
+	valStr := getEnv(name, "")
+	if value, err := strconv.Atoi(valStr); err == nil {
 		return value
 	}
 
