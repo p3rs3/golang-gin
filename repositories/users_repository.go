@@ -25,7 +25,7 @@ func CreateUsersRepository(Db *gorm.DB) IUsersRepository {
 }
 
 func (ur *UsersRepository) FindOneById(id int) (user model.User, err error) {
-	result := ur.Db.First(&user, id)
+	result := ur.Db.Preload("Orders").First(&user, id)
 
 	if result.Error != nil {
 		err = result.Error
@@ -35,7 +35,7 @@ func (ur *UsersRepository) FindOneById(id int) (user model.User, err error) {
 }
 
 func (ur *UsersRepository) FindMany() (users []model.User) {
-	ur.Db.Limit(USERS_LIMIT).Find(&users)
+	ur.Db.Limit(USERS_LIMIT).Preload("Orders").Find(&users)
 	return users
 }
 
